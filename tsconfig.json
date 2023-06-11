@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "module": "commonjs",
+        "moduleResolution": "Node16",
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "outDir": "lib",
+        "sourceMap": true,
+        "strict": true,
+        "target": "es2020",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
+    },
+    "compileOnSave": true,
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "src/**/*.test.ts"
+    ]
+}
