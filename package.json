@@ -1,6 +1,6 @@
 {
   "name": "appflags-node",
-  "version": "0.0.1",
+  "version": "1.0.0-next.1",
   "description": "Node SDK for AppFlags.io",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -12,14 +12,23 @@
   ],
   "scripts": {
     "start": "node lib/index.js",
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "dependencies": {
-    "@appflags/bucketing-assemblyscript": "^0.0.1",
-    "@appflags/types-typescript": "file:../appflags-protobuf-types/generated/typescript"
+    "@appflags/bucketing-assemblyscript": "^1.0.2",
+    "@appflags/common": "^1.0.0",
+    "@appflags/protobuf-types-typescript": "1.1.0-next.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/gitlab": "^12.0.3",
+    "ably": "^1.2.41",
+    "eventemitter3": "^5.0.1",
+    "node-fetch": "2.6.12",
+    "semantic-release-slack-bot": "^4.0.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/node-fetch": "2.6.4",
+    "@types/uuid": "^9.0.2",
     "typescript": "^5.1.3"
   },
   "author": "",
