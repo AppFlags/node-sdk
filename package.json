@@ -17,7 +17,7 @@
   "dependencies": {
     "@appflags/bucketing-assemblyscript": "^1.0.2",
     "@appflags/common": "^1.0.0",
-    "@appflags/protobuf-types-typescript": "1.1.0-next.1",
+    "@appflags/protobuf-types-typescript": "1.1.0",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/gitlab": "^12.0.3",
     "ably": "^1.2.41",
