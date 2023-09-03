@@ -4,12 +4,10 @@ import {Bucketing} from "./bucketing";
 import {Flag, User} from "@appflags/common";
 import {fromFlagProto, toUserProto} from "./utils/protobufConverters";
 import {EventEmitter} from "eventemitter3";
-import {EventQueue, EventQueueOptions} from "./eventQueue";
 
 interface ClientInitializationOptions {
     loggerOptions?: LoggerOptions
     configurationOptions?: ConfigurationManagerOptions
-    eventQueueOptions?: EventQueueOptions
     _edgeUrlOverride?: string,
 }
 
@@ -21,7 +19,6 @@ export class AppFlagsClient {
     private readonly logger: Logger;
     private readonly configurationManager: ConfigurationManager;
     private readonly bucketing: Bucketing;
-    private readonly eventQueue: EventQueue;
     private readonly eventBus;
     private readonly initializedPromise: Promise<void>;
 
@@ -37,7 +34,6 @@ export class AppFlagsClient {
         this.logger = new Logger(options.loggerOptions || {});
         this.configurationManager = new ConfigurationManager(this.logger, edgeUrl, sdkKey, this.handleConfigurationChanged, options.configurationOptions || {});
         this.bucketing = new Bucketing();
-        this.eventQueue = new EventQueue(this.logger, edgeUrl, sdkKey, options.eventQueueOptions || {});
         this.eventBus = new EventEmitter();
 
         this.initializedPromise = Promise.all([
@@ -94,8 +90,6 @@ export class AppFlagsClient {
         const bucketingResults = this.bucketing.bucket(config, userProto);
         const flags = bucketingResults.flags.map(fromFlagProto);
 
-        this.eventQueue.queueBucketEvent(user.key);
-
         this.logger.debug(`Determined flags for user [key: ${user.key}], flags:`, flags);
 
         return flags;
@@ -119,7 +113,6 @@ export class AppFlagsClient {
      */
     async close(): Promise<void> {
         this.configurationManager.close();
-        await this.eventQueue.close();
         clientCount--;
     }
 
