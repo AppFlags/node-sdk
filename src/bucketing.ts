@@ -16,15 +16,29 @@ export class Bucketing {
         this.exports = await instantiate(module, {env: {}});
     }
 
-    bucket(configuration: appflags.Configuration, user: appflags.User): appflags.BucketingResult  {
+    setConfiguration(configuration: appflags.Configuration) {
+        const encodedConfiguration = appflags.Configuration.encode(configuration).finish();
+        this.exports.setConfiguration(encodedConfiguration);
+    }
+
+    bucket(user: appflags.User): appflags.BucketingResult  {
         if (!this.exports) {
             throw Error("Bucketing not yet initialized");
         }
-
-        const encodedConfiguration = appflags.Configuration.encode(configuration).finish();
         const encodedUser = appflags.User.encode(user).finish();
 
-        const encodedResult = this.exports.bucket(encodedConfiguration, encodedUser);
+        const encodedResult = this.exports.bucket(encodedUser);
+
+        return appflags.BucketingResult.decode(encodedResult);
+    }
+
+    bucketOneFlag(user: appflags.User, flagKey: string): appflags.BucketingResult  {
+        if (!this.exports) {
+            throw Error("Bucketing not yet initialized");
+        }
+        const encodedUser = appflags.User.encode(user).finish();
+
+        const encodedResult = this.exports.bucketOneFlag(encodedUser, flagKey);
 
         return appflags.BucketingResult.decode(encodedResult);
     }

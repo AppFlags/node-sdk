@@ -15,9 +15,9 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@appflags/bucketing-assemblyscript": "^1.0.2",
+    "@appflags/bucketing-assemblyscript": "^1.2.0",
     "@appflags/common": "^1.0.0",
-    "@appflags/protobuf-types-typescript": "2.0.0",
+    "@appflags/protobuf-types-typescript": "2.0.1",
     "ably": "^1.2.41",
     "eventemitter3": "^5.0.1",
     "node-fetch": "2.6.12",

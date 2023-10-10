@@ -42,7 +42,6 @@ export class ConfigurationManager {
 
     getConfiguration(): appflags.Configuration {
         if (!this.configuration) {
-            // TODO: add better logging here to explain to user how to wait for initialization
             this.logger.error("Cannot use configuration before the client has been initialized.");
             throw Error("ConfigurationManager is not initialized yet");
         }

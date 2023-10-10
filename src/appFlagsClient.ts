@@ -36,10 +36,8 @@ export class AppFlagsClient {
         this.bucketing = new Bucketing();
         this.eventBus = new EventEmitter();
 
-        this.initializedPromise = Promise.all([
-            this.configurationManager.initialize(),
-            this.bucketing.instantiate()
-        ]).then(() => {
+        this.initializedPromise = this.initialize()
+        .then(() => {
             this.logger.info("Initialized AppFlags client");
         }).catch(err => {
             this.logger.error("Unable to initialize the AppFlags client.", err);
@@ -56,6 +54,12 @@ export class AppFlagsClient {
         })
     }
 
+    private async initialize() {
+        await this.configurationManager.initialize();
+        await this.bucketing.instantiate();
+        this.bucketing.setConfiguration(this.configurationManager.getConfiguration());
+    }
+
     /**
      * Returns a promise that resolves when the AppFlags client is fully initialized and ready for use.
      *
@@ -66,6 +70,7 @@ export class AppFlagsClient {
     }
 
     private handleConfigurationChanged = () => {
+        this.bucketing.setConfiguration(this.configurationManager.getConfiguration());
         this.eventBus.emit(FLAGS_CHANGED_EVENT);
     }
 
@@ -86,8 +91,7 @@ export class AppFlagsClient {
      */
     getAllFlags(user: User): Flag[] {
         const userProto = toUserProto(user);
-        const config = this.configurationManager.getConfiguration();
-        const bucketingResults = this.bucketing.bucket(config, userProto);
+        const bucketingResults = this.bucketing.bucket(userProto);
         const flags = bucketingResults.flags.map(fromFlagProto);
 
         this.logger.debug(`Determined flags for user [key: ${user.key}], flags:`, flags);
@@ -103,7 +107,9 @@ export class AppFlagsClient {
      * @returns The Flag computed for the provided user, or undefined if no such Flag exists.
      */
     getFlag(user: User, key: string): Flag|undefined {
-        const flags = this.getAllFlags(user);
+        const userProto = toUserProto(user);
+        const bucketingResults = this.bucketing.bucketOneFlag(userProto, key);
+        const flags = bucketingResults.flags.map(fromFlagProto);
         return flags.find(flag => flag.key === key);
     }
 
